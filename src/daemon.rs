@@ -19,6 +19,9 @@ const MIN_RECORDING: Duration = Duration::from_millis(300);
 const MAX_RECORDING: Duration = Duration::from_secs(120);
 const LEVEL_TICK: Duration = Duration::from_millis(66);
 const SILENCE_PEAK: f32 = 0.01;
+// Hold-to-talk releases the hotkey a beat before Super; typing while Super is
+// still down would fire Hyprland binds, so never type sooner than this.
+const OUTPUT_GUARD: Duration = Duration::from_millis(400);
 
 // ponytail: no config file — these flags live on the autostart line.
 pub struct Opts {
@@ -250,6 +253,7 @@ fn stop(d: &D) {
 
     let d = Arc::clone(d);
     thread::spawn(move || {
+        let stopped = Instant::now();
         let samples = rec.finish();
         let t0 = Instant::now();
         // Whisper hallucinates on silence ("Tamam.", "Altyazı M.K."); skip
@@ -263,6 +267,9 @@ fn stop(d: &D) {
                     samples.len() as f32 / SAMPLE_RATE as f32,
                     t0.elapsed()
                 );
+                if let Some(wait) = OUTPUT_GUARD.checked_sub(stopped.elapsed()) {
+                    thread::sleep(wait);
+                }
                 output(&text);
             }
             Ok(_) => eprintln!("omarchywispr: nothing recognised{}", if silent { " (silence)" } else { "" }),

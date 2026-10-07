@@ -24,7 +24,8 @@ fi
 echo "==> shell plugin"
 mkdir -p "$(dirname "$plugin_dir")"
 [[ -L $plugin_dir || -e $plugin_dir ]] || ln -s "$repo/plugin" "$plugin_dir"
-omarchy-shell shell rescanPlugins >/dev/null 2>&1 || true
+# The shell's file watcher does not follow the symlink; a restart picks up edits.
+omarchy restart shell >/dev/null 2>&1 || true
 if ! grep -q "\"$plugin_id\"" "$HOME/.config/omarchy/shell.json" 2>/dev/null; then
   omarchy plugin enable "$plugin_id" --section center --after omarchy.weather
 fi
@@ -36,6 +37,8 @@ add_line() { # file line
   printf '\n%s\n' "$2" >> "$1"
 }
 add_line "$hypr/bindings.lua" 'o.bind("SUPER + ALT + V", "Dictate (toggle)", "omarchywispr toggle")'
+add_line "$hypr/bindings.lua" 'o.bind("SUPER + less", "Dictate (hold)", "omarchywispr start")'
+add_line "$hypr/bindings.lua" 'o.bind("SUPER + less", "Dictate (release)", "omarchywispr stop", { release = true })'
 add_line "$hypr/autostart.lua" 'o.launch_on_start("omarchywispr daemon")'
 hyprctl reload >/dev/null
 hyprctl configerrors
@@ -46,4 +49,4 @@ if ! omarchywispr status >/dev/null 2>&1; then
   sleep 3
 fi
 omarchywispr status
-echo "done — press SUPER+ALT+V, speak, press again."
+echo "done — hold SUPER+< and speak, or toggle with SUPER+ALT+V."

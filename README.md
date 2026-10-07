@@ -4,7 +4,8 @@ Local push-to-talk dictation for [Omarchy](https://omarchy.org) — a tiny
 Wispr Flow. Press a key, speak, press again: the text is typed into whatever
 has focus. Runs whisper.cpp on the GPU, nothing leaves the machine.
 
-- `SUPER + ALT + V` toggles recording (edit `~/.config/hypr/bindings.lua`).
+- Hold `SUPER + <` to talk, release to type. `SUPER + ALT + V` toggles instead
+  (both in `~/.config/hypr/bindings.lua`).
 - A small level meter appears in the top bar (right of the weather icon)
   while recording and pulses while transcribing (shell plugin `darkwarro.wispr`).
 - Default model: OpenAI Whisper `small`, 8-bit (`ggml-small-q8_0.bin`,
@@ -33,6 +34,9 @@ omarchywispr toggle | start | stop | status [--follow]
 Models live in `~/.local/share/omarchywispr/`. Other whisper.cpp ggml files
 from <https://huggingface.co/ggerganov/whisper.cpp> drop in:
 `medium-q5_0` (539 MB, better Turkish) or `large-v3-turbo-q5_0` (574 MB, best).
+
+After editing `plugin/*.qml` run `omarchy restart shell` — the shell's file
+watcher does not follow the plugin symlink.
 
 ## How it works
 
