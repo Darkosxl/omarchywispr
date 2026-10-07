@@ -1,0 +1,4 @@
+# Build ggml-cuda only for the GPU in this machine (sm_89 on RTX 4050);
+# the default fat binary for every arch takes several times longer.
+[env]
+CUDAARCHS = "native"

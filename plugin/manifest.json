@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "darkwarro.wispr",
+  "name": "Wispr",
+  "version": "0.1.0",
+  "author": "darkwarro",
+  "description": "Bar indicator for the omarchywispr dictation daemon: mic level while recording, pulse while transcribing.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "barWidget": {
+    "displayName": "Wispr dictation",
+    "description": "Shows up while omarchywispr is recording or transcribing",
+    "category": "Info",
+    "allowMultiple": false
+  }
+}
